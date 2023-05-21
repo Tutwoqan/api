@@ -23,6 +23,7 @@ interface Logger {
     fun buildError(): LogMessageBuilder
     fun error(builder: LogMessageBuilder.() -> Unit)
     fun error(error: Throwable)
+
     fun fatal(message: String): Nothing
     fun buildFatal(): LogMessageBuilder
     fun fatal(builder: LogMessageBuilder.() -> Unit)
