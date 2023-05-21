@@ -32,5 +32,5 @@ abstract class Task(config: AbstractTaskConfig) {
      *
      * Must be not accessible at compile time, will be invoked via reflection.
      */
-    protected abstract fun run()
+    protected abstract fun run(buildLogger: Logger)
 }

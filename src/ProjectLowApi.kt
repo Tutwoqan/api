@@ -1,6 +1,7 @@
 package io.github.totwoqan
 
 import java.io.File
+import kotlin.reflect.KClass
 
 interface ProjectLowApi {
     /**
@@ -29,4 +30,18 @@ interface ProjectLowApi {
      * but will be removed by full clean.
      */
     fun buildDirForPackage(pkgName: String): File
+
+    /**
+     * Logger for package which contains common global state for different tasks.
+     *
+     * @param global if global state also shared between project instances.
+     */
+    fun loggerFor(pkg: String, global: Boolean = false)
+
+    /**
+     * Logger for task with global state.
+     *
+     * @param global if global state shared between project instances.
+     */
+    fun loggerFor(meta: KClass<out TaskMetaFactory>, global: Boolean = false)
 }

@@ -5,7 +5,7 @@ import kotlin.reflect.KClass
 interface TaskMeta<CONFIG : AbstractTaskConfig> {
     fun createConfig(): CONFIG
 
-    fun createTask(config: CONFIG): Task
+    fun createTask(configLogger: Logger, config: CONFIG): Task
 
     fun finalize()
 }
