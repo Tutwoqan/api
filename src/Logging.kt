@@ -24,10 +24,10 @@ interface Logger {
     fun error(builder: LogMessageBuilder.() -> Unit)
     fun error(error: Throwable)
 
-    fun fatal(message: String): Nothing
+    fun fatal(message: String)
     fun buildFatal(): LogMessageBuilder
     fun fatal(builder: LogMessageBuilder.() -> Unit)
-    fun fatal(error: Throwable): Nothing
+    fun fatal(error: Throwable)
 }
 
 interface LogMessageBuilder {
@@ -39,4 +39,10 @@ interface LogMessageBuilder {
     fun posInFile(file: File, line: UInt, column: UInt): LogMessageBuilder
     fun posInFile(file: File, relativeTo: File, line: UInt, column: UInt): LogMessageBuilder
     fun exception(exc: Throwable): LogMessageBuilder
+    fun indent(width: UInt): LogMessageBuilder
+    fun indent(): LogMessageBuilder = this.indent(1u)
+}
+
+object FatalError : Throwable("This throwable is for internal purposes, if you see it uncaught, something went very wrong") {
+    override fun fillInStackTrace(): Throwable = this
 }
