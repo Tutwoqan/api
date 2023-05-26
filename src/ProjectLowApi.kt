@@ -13,9 +13,6 @@ interface ProjectLowApi {
     fun join(pipe0: FilesPipe, vararg pipeN: FilesPipe)
     fun filter(pipe: FilesPipe, filter: (File) -> Boolean)
 
-//    val variables: ScopesAccessor<Any?>
-//    val tasks: ScopesAccessor<Task>
-
     //    val hostOs: OS
     // val hostArch: String // todo
 
