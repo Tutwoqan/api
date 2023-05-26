@@ -1,6 +1,7 @@
 package io.github.totwoqan
 
 import java.io.File
+import java.net.URL
 import kotlin.reflect.KClass
 
 interface ProjectLowApi {
@@ -62,4 +63,22 @@ interface ProjectLowApi {
      * @throws IllegalStateException if function called outside [TaskMeta.createConfig] call (or it's subcalls).
      */
     fun <C : AbstractTaskConfig<*>, T> taskConfigProperty(default: T): TaskConfigProperty<C, T>
+
+
+    fun extendClasspath(jarsOrDirs: FilesPipe)
+
+    fun <T : Task, C : AbstractTaskConfig<T>> createTask(configClass: KClass<C>, initializer: C.() -> Unit): T
+
+    fun assertExists(file0: File, vararg fileN: File): FilesPipe
+
+    fun download(url: String): FilesPipe
+
+    fun download(url: URL): FilesPipe
+
+    fun collectFiles(dir: File): FilesPipe
+
+    fun collectFiles(dir: File, filter: (File) -> Boolean): FilesPipe
 }
+
+inline fun <T : Task, reified C : AbstractTaskConfig<T>> ProjectLowApi.createTask(noinline initializer: C.() -> Unit): T =
+    this.createTask(C::class, initializer)
