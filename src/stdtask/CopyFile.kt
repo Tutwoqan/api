@@ -7,11 +7,9 @@ import io.github.totwoqan.FilesPipeWriter
 import io.github.totwoqan.Logger
 import io.github.totwoqan.ProjectLowApi
 import io.github.totwoqan.Task
-import io.github.totwoqan.TaskConfigPropertySingleValue
 import io.github.totwoqan.TaskMeta
 import io.github.totwoqan.TaskMetaFactory
 import io.github.totwoqan.TaskMetaReference
-import io.github.totwoqan.getAssert
 import java.io.File
 import java.nio.file.DirectoryNotEmptyException
 import java.nio.file.FileAlreadyExistsException
@@ -26,11 +24,9 @@ private object CopyFileTaskMetaFactory : TaskMetaFactory {
 
 private class CopyFileTaskMeta(private val project: ProjectLowApi) : TaskMeta<CopyFileConfig> {
     override fun createConfig(): CopyFileConfig =
-        CopyFileConfig()
+        CopyFileConfig(this.project)
 
     override fun createTask(configLogger: Logger, config: CopyFileConfig): Task {
-        CopyFileConfig::source.getAssert(config)
-        CopyFileConfig::destination.getAssert(config)
         return CopyFileTask(this.project, config)
     }
 
@@ -39,10 +35,10 @@ private class CopyFileTaskMeta(private val project: ProjectLowApi) : TaskMeta<Co
 }
 
 @TaskMetaReference(CopyFileTaskMetaFactory::class)
-class CopyFileConfig : AbstractTaskConfig() {
-    var source: FilesPipe by TaskConfigPropertySingleValue()
-    var destination: File by TaskConfigPropertySingleValue()
-    var createMissingDirectories: Boolean by TaskConfigPropertySingleValue(default = true)
+class CopyFileConfig(project: ProjectLowApi) : AbstractTaskConfig() {
+    var source: FilesPipe by project.taskConfigProperty()
+    var destination: File by project.taskConfigProperty()
+    var createMissingDirectories: Boolean by project.taskConfigProperty(true)
 }
 
 @Suppress("unused")

@@ -44,4 +44,22 @@ interface ProjectLowApi {
      * @param global if global state shared between project instances.
      */
     fun loggerFor(meta: KClass<out TaskMetaFactory>, global: Boolean = false)
+
+    /**
+     * Task property factory. Properties are bound to owner [task config][AbstractTaskConfig] instance.
+     * Before invoking [TaskMeta.createTask] will be checked, that all properties of specified instance are initialized.
+     * Returned object can be updated only once.
+     *
+     * @throws IllegalStateException if function called outside [TaskMeta.createConfig] call (or it's subcalls).
+     */
+    fun <C : AbstractTaskConfig, T> taskConfigProperty(): TaskConfigProperty<C, T>
+
+    /**
+     * Task property factory. Properties are bound to owner [task config][AbstractTaskConfig] instance.
+     * Property with default values wouldn't be checked because already initialized,
+     * but it is anyway writable one time more.
+     *
+     * @throws IllegalStateException if function called outside [TaskMeta.createConfig] call (or it's subcalls).
+     */
+    fun <C : AbstractTaskConfig, T> taskConfigProperty(default: T): TaskConfigProperty<C, T>
 }
