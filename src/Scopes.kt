@@ -1,5 +1,7 @@
 package io.github.totwoqan
 
+import io.github.totwoqan.stdtask.CopyFile
+import io.github.totwoqan.stdtask.CopyFileTask
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KClass
@@ -41,16 +43,10 @@ interface TasksScope {
 
     operator fun <T : Task> provideDelegate(owner: Any?, property: KProperty<*>): ReadOnlyProperty<*, T>
 
-    fun <T : Task, C : AbstractTaskConfig<T>> create(configClass: KClass<*>, initializer: C.() -> Unit): T
-    fun <T : Task, C : AbstractTaskConfig<T>> creating(configClass: KClass<*>, initializer: C.() -> Unit): CreatedTaskDelegateFactory<T>
+    fun <M : TaskType<C, T>, C : AbstractTaskConfig, T : Task> create(taskType: M, initializer: C.() -> Unit): T
+    fun <M : TaskType<C, T>, C : AbstractTaskConfig, T : Task> creating(taskType: M, initializer: C.() -> Unit): CreatedTaskDelegateFactory<T>
 }
 
 interface CreatedTaskDelegateFactory<T : Task> {
-    operator fun provideDelegate(owner: Any?, property: KProperty<*>): ReadOnlyProperty<*, T>
+    operator fun provideDelegate(owner: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, T>
 }
-
-inline fun <T : Task, reified C : AbstractTaskConfig<T>> TasksScope.create(noinline initializer: C.() -> Unit): T =
-    this.create(C::class, initializer)
-
-inline fun <T : Task, reified C : AbstractTaskConfig<T>> TasksScope.creating(noinline initializer: C.() -> Unit): CreatedTaskDelegateFactory<T> =
-    this.creating(C::class, initializer)

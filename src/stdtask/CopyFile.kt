@@ -10,6 +10,7 @@ import io.github.totwoqan.Task
 import io.github.totwoqan.TaskMeta
 import io.github.totwoqan.TaskMetaFactory
 import io.github.totwoqan.TaskMetaReference
+import io.github.totwoqan.TaskType
 import java.io.File
 import java.nio.file.DirectoryNotEmptyException
 import java.nio.file.FileAlreadyExistsException
@@ -18,11 +19,11 @@ import java.nio.file.NoSuchFileException
 
 
 private object CopyFileTaskMetaFactory : TaskMetaFactory {
-    override fun createMeta(project: ProjectLowApi): TaskMeta<*, *> =
+    override fun createMeta(project: ProjectLowApi): TaskMeta<*> =
         CopyFileTaskMeta(project)
 }
 
-private class CopyFileTaskMeta(private val project: ProjectLowApi) : TaskMeta<CopyFileTask, CopyFileConfig> {
+private class CopyFileTaskMeta(private val project: ProjectLowApi) : TaskMeta<CopyFileConfig> {
     override fun createConfig(): CopyFileConfig =
         CopyFileConfig(this.project)
 
@@ -34,15 +35,15 @@ private class CopyFileTaskMeta(private val project: ProjectLowApi) : TaskMeta<Co
 
 }
 
-@TaskMetaReference(CopyFileTaskMetaFactory::class)
-class CopyFileConfig(project: ProjectLowApi) : AbstractTaskConfig<CopyFileTask>() {
+class CopyFileConfig(project: ProjectLowApi) : AbstractTaskConfig() {
     var source: FilesPipe by project.taskConfigProperty()
     var destination: File by project.taskConfigProperty()
     var createMissingDirectories: Boolean by project.taskConfigProperty(true)
 }
 
-@Suppress("unused")
-typealias CopyFile = CopyFileConfig
+@TaskMetaReference(CopyFileTaskMetaFactory::class)
+
+object CopyFile : TaskType<CopyFileConfig, CopyFileTask>
 
 class CopyFileTask(project: ProjectLowApi, config: CopyFileConfig) : Task(config) {
     private val createMissingDirectories = config.createMissingDirectories

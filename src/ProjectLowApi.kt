@@ -50,7 +50,7 @@ interface ProjectLowApi {
      *
      * @throws IllegalStateException if function called outside [TaskMeta.createConfig] call (or it's subcalls).
      */
-    fun <C : AbstractTaskConfig<*>, T> taskConfigProperty(): TaskConfigProperty<C, T>
+    fun <C : AbstractTaskConfig, T> taskConfigProperty(): TaskConfigProperty<C, T>
 
     /**
      * Task property factory. Properties are bound to owner [task config][AbstractTaskConfig] instance.
@@ -59,12 +59,12 @@ interface ProjectLowApi {
      *
      * @throws IllegalStateException if function called outside [TaskMeta.createConfig] call (or it's subcalls).
      */
-    fun <C : AbstractTaskConfig<*>, T> taskConfigProperty(default: T): TaskConfigProperty<C, T>
+    fun <C : AbstractTaskConfig, T> taskConfigProperty(default: T): TaskConfigProperty<C, T>
 
 
     fun extendClasspath(jarsOrDirs: FilesPipe)
 
-    fun <T : Task, C : AbstractTaskConfig<T>> createTask(configClass: KClass<C>, initializer: C.() -> Unit): T
+    fun <M : TaskType<C, T>, C : AbstractTaskConfig, T : Task> createTask(taskType: M, initializer: C.() -> Unit): T
 
     fun assertExists(file0: File, vararg fileN: File): FilesPipe
 
@@ -76,6 +76,3 @@ interface ProjectLowApi {
 
     fun collectFiles(dir: File, filter: (File) -> Boolean): FilesPipe
 }
-
-inline fun <T : Task, reified C : AbstractTaskConfig<T>> ProjectLowApi.createTask(noinline initializer: C.() -> Unit): T =
-    this.createTask(C::class, initializer)

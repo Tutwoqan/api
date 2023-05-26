@@ -3,20 +3,20 @@ package io.github.totwoqan
 import kotlin.reflect.KClass
 
 interface TaskMetaFactory {
-    fun createMeta(project: ProjectLowApi): TaskMeta<*, *>
+    fun createMeta(project: ProjectLowApi): TaskMeta<*>
 }
 
-interface TaskMeta<TASK : Task, CONFIG : AbstractTaskConfig<TASK>> {
+interface TaskMeta<CONFIG : AbstractTaskConfig> {
     fun createConfig(): CONFIG
 
-    fun createTask(configLogger: Logger, config: CONFIG): TASK
+    fun createTask(configLogger: Logger, config: CONFIG): Task
 
     fun finalize()
 }
 
 
 /**
- * Annotation for inheritors of [AbstractTaskConfig] to resolve corresponding [TaskMeta] instance
+ * Annotation for inheritors of [TaskType] to resolve corresponding [TaskMeta] instance
  * (one build system instance - one call to [createMeta][TaskMetaFactory.createMeta] of each referenced [TaskMetaFactory]).
  */
 @Retention(AnnotationRetention.RUNTIME)
@@ -29,7 +29,7 @@ annotation class TaskMetaReference(val factory: KClass<out TaskMetaFactory>)
  * created by [TaskMeta.createConfig] and then converted to [tasks][Task] by [TaskMeta.createTask].
  * All inheritors must have annotation [TaskMetaReference].
  */
-abstract class AbstractTaskConfig<TASK : Task> {
+abstract class AbstractTaskConfig {
     /**
      * @see Task.dependencies
      */
@@ -47,7 +47,7 @@ abstract class AbstractTaskConfig<TASK : Task> {
 /**
  * Base class of all tasks implementations.
  */
-abstract class Task(config: AbstractTaskConfig<*>) {
+abstract class Task(config: AbstractTaskConfig) {
     /**
      * Set of tasks that must be complete before running this task.
      */
@@ -77,3 +77,5 @@ abstract class Task(config: AbstractTaskConfig<*>) {
      */
     protected abstract fun run(buildLogger: Logger)
 }
+
+interface TaskType<CONFIG : AbstractTaskConfig, TASK : Task>
