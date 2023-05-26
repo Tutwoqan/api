@@ -3,7 +3,7 @@ package io.github.totwoqan
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
 
-interface TaskConfigProperty<C : AbstractTaskConfig, T> {
+interface TaskConfigProperty<C : AbstractTaskConfig<*>, T> {
     operator fun provideDelegate(owner: C, property: KProperty<*>): TaskConfigProperty<C, T>
 
     operator fun getValue(owner: C, property: KProperty<*>): T

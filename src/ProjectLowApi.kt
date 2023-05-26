@@ -52,7 +52,7 @@ interface ProjectLowApi {
      *
      * @throws IllegalStateException if function called outside [TaskMeta.createConfig] call (or it's subcalls).
      */
-    fun <C : AbstractTaskConfig, T> taskConfigProperty(): TaskConfigProperty<C, T>
+    fun <C : AbstractTaskConfig<*>, T> taskConfigProperty(): TaskConfigProperty<C, T>
 
     /**
      * Task property factory. Properties are bound to owner [task config][AbstractTaskConfig] instance.
@@ -61,5 +61,5 @@ interface ProjectLowApi {
      *
      * @throws IllegalStateException if function called outside [TaskMeta.createConfig] call (or it's subcalls).
      */
-    fun <C : AbstractTaskConfig, T> taskConfigProperty(default: T): TaskConfigProperty<C, T>
+    fun <C : AbstractTaskConfig<*>, T> taskConfigProperty(default: T): TaskConfigProperty<C, T>
 }

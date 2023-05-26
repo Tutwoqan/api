@@ -18,15 +18,15 @@ import java.nio.file.NoSuchFileException
 
 
 private object CopyFileTaskMetaFactory : TaskMetaFactory {
-    override fun createMeta(project: ProjectLowApi): TaskMeta<*> =
+    override fun createMeta(project: ProjectLowApi): TaskMeta<*, *> =
         CopyFileTaskMeta(project)
 }
 
-private class CopyFileTaskMeta(private val project: ProjectLowApi) : TaskMeta<CopyFileConfig> {
+private class CopyFileTaskMeta(private val project: ProjectLowApi) : TaskMeta<CopyFileTask, CopyFileConfig> {
     override fun createConfig(): CopyFileConfig =
         CopyFileConfig(this.project)
 
-    override fun createTask(configLogger: Logger, config: CopyFileConfig): Task {
+    override fun createTask(configLogger: Logger, config: CopyFileConfig): CopyFileTask {
         return CopyFileTask(this.project, config)
     }
 
@@ -35,7 +35,7 @@ private class CopyFileTaskMeta(private val project: ProjectLowApi) : TaskMeta<Co
 }
 
 @TaskMetaReference(CopyFileTaskMetaFactory::class)
-class CopyFileConfig(project: ProjectLowApi) : AbstractTaskConfig() {
+class CopyFileConfig(project: ProjectLowApi) : AbstractTaskConfig<CopyFileTask>() {
     var source: FilesPipe by project.taskConfigProperty()
     var destination: File by project.taskConfigProperty()
     var createMissingDirectories: Boolean by project.taskConfigProperty(true)
