@@ -75,4 +75,6 @@ interface ProjectLowApi {
     fun collectFiles(dir: File): FilesPipe
 
     fun collectFiles(dir: File, filter: (File) -> Boolean): FilesPipe
+
+    val apiVersion: Version
 }

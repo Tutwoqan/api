@@ -37,4 +37,6 @@ abstract class KotlinScriptContext {
     abstract operator fun FilesPipe.plus(other: FilesPipe): FilesPipe
 
     abstract fun join(pipe0: FilesPipe, vararg pipeN: FilesPipe): FilesPipe
+
+    abstract val apiVersion: Version
 }
